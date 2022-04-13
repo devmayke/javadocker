@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  
+  db:
+    image: mysql:5.7
+    restart: always    
+    ports:
+      - 3307:3306
+    expose:
+      - 3306
+    networks:
+      - springnet
+    volumes:
+    - data:/var/lib/mysql
+    - ./datadocker/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: Codebase1@1    
+      MYSQL_DATABASE: spring
+
+  javaapp:
+    # build:
+    #   context: ./  
+    image: devmayke/javaapp
+    ports:
+      - 8080:8080
+    networks:
+      - springnet
+    depends_on:
+      - db
+    links:
+      - db    
+
+
+volumes:
+  data:
+
+  
+
+networks:
+  springnet:
+    driver: 
+      bridge
+
+
+# Run to execute this file
+# docker-compose up --build --force-recreate
